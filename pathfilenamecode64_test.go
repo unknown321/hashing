@@ -46,6 +46,13 @@ func TestHashFileName(t *testing.T) {
 			},
 			want: 0x18e72be6ec606799,
 		},
+		{
+			name: "6",
+			args: args{
+				s: "/Assets/fox/effect/gr_pic/default_reflection.1.ftexs",
+			},
+			want: 0xb2c196554adaccbe,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

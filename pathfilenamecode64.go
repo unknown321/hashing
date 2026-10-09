@@ -2,8 +2,9 @@ package hashing
 
 import (
 	"bytes"
-	"github.com/unknown321/cityhash"
 	"strings"
+
+	"github.com/unknown321/cityhash"
 )
 
 //go:generate go run generate/generate.go
@@ -13,9 +14,12 @@ const MetaFlag = 0x4000000000000
 
 func HashFileNameWithExtension(s string) uint64 {
 	ext := ""
-	dotIndex := strings.LastIndex(s, ".")
-	if dotIndex > 0 {
-		ext = s[dotIndex+1:]
+
+	for k := range Extensions {
+		if strings.HasSuffix(s, "."+k) {
+			ext = k
+			break
+		}
 	}
 
 	eh, ok := Extensions[ext]
@@ -38,9 +42,11 @@ func HashFileName(s string, removeExtension bool) uint64 {
 	}
 
 	if removeExtension {
-		dotIndex := strings.LastIndex(trimmed, ".")
-		if dotIndex > 0 {
-			trimmed = trimmed[:dotIndex]
+		for k := range Extensions {
+			if strings.HasSuffix(s, "."+k) {
+				trimmed = trimmed[:len(trimmed)-len("."+k)]
+				break
+			}
 		}
 	}
 

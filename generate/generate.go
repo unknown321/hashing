@@ -3,8 +3,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/unknown321/hashing"
 	"os"
+
+	"github.com/unknown321/hashing"
 )
 
 var extensions = []string{
@@ -16,6 +17,18 @@ var extensions = []string{
 	"5.ftexs",
 	"6.ftexs",
 	"ag.evf",
+	"cc.evf",
+	"eng.lng",
+	"fre.lng",
+	"fx.evf",
+	"ger.lng",
+	"ita.lng",
+	"jpn.lng",
+	"por.lng",
+	"rus.lng",
+	"sd.evf",
+	"spa.lng",
+	"vo.evf",
 	"aia",
 	"aib",
 	"aibc",
@@ -27,14 +40,12 @@ var extensions = []string{
 	"atsh",
 	"bnd",
 	"bnk",
-	"cc.evf",
 	"clo",
 	"csnav",
 	"dat",
 	"des",
 	"dnav",
 	"dnav2",
-	"eng.lng",
 	"ese",
 	"evb",
 	"evf",
@@ -60,7 +71,6 @@ var extensions = []string{
 	"fpkd",
 	"fpkl",
 	"frdv",
-	"fre.lng",
 	"frig",
 	"frt",
 	"fsd",
@@ -70,19 +80,15 @@ var extensions = []string{
 	"fstb",
 	"ftex",
 	"fv2",
-	"fx.evf",
 	"fxp",
 	"gani",
 	"geom",
-	"ger.lng",
 	"gpfp",
 	"grxla",
 	"grxoc",
 	"gskl",
 	"htre",
 	"info",
-	"ita.lng",
-	"jpn.lng",
 	"json",
 	"lad",
 	"ladb",
@@ -108,23 +114,19 @@ var extensions = []string{
 	"ph",
 	"phep",
 	"phsd",
-	"por.lng",
 	"qar",
 	"rbs",
 	"rdb",
 	"rdf",
 	"rnav",
-	"rus.lng",
 	"sad",
 	"sand",
 	"sani",
 	"sbp",
-	"sd.evf",
 	"sdf",
 	"sim",
 	"simep",
 	"snav",
-	"spa.lng",
 	"spch",
 	"sub",
 	"subp",
@@ -143,7 +145,6 @@ var extensions = []string{
 	"vfxbin",
 	"vfxdb",
 	"vnav",
-	"vo.evf",
 	"vpc",
 	"wem",
 	"wmv",
@@ -151,9 +152,9 @@ var extensions = []string{
 }
 
 func main() {
-	res := make(map[string]uint64)
-	for _, v := range extensions {
-		res[v] = hashing.HashFileName(v, false) & 0x1fff
+	var res = make([]uint64, len(extensions))
+	for i, v := range extensions {
+		res[i] = hashing.HashFileName(v, false) & 0x1fff
 	}
 
 	var out *os.File
@@ -169,8 +170,8 @@ var Extensions = map[string]uint64{
 		panic(err)
 	}
 
-	for k, v := range res {
-		if _, err = out.WriteString(fmt.Sprintf("\"%s\":0x%x,\n", k, v)); err != nil {
+	for i := range res {
+		if _, err = out.WriteString(fmt.Sprintf("\"%s\":0x%x,\n", extensions[i], res[i])); err != nil {
 			panic(err)
 		}
 	}
@@ -180,8 +181,8 @@ var Extensions = map[string]uint64{
 	}
 
 	out.WriteString("var ExtensionsByHash = map[uint64]string{\n")
-	for k, v := range res {
-		if _, err = out.WriteString(fmt.Sprintf("0x%x: \"%s\",\n", v, k)); err != nil {
+	for i := range res {
+		if _, err = out.WriteString(fmt.Sprintf("0x%x: \"%s\",\n", res[i], extensions[i])); err != nil {
 			panic(err)
 		}
 	}
